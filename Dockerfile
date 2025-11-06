@@ -1,6 +1,7 @@
-FROM node:18-alpine
+FROM node:25-alpine
 
-RUN corepack enable && corepack prepare pnpm@10 --activate
+RUN apk add python3 make g++
+RUN npm install -g pnpm@10
 
 COPY . /app
 WORKDIR /app

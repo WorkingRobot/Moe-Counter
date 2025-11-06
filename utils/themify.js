@@ -3,7 +3,7 @@
 const fs = require('fs')
 const path = require('path')
 const mimeType = require('mime-types')
-const sizeOf = require('image-size')
+const { imageSize } = require('image-size')
 const { toFixed } = require('./index')
 
 const themePath = path.resolve(__dirname, '../assets/theme')
@@ -24,7 +24,7 @@ fs.readdirSync(themePath).forEach(theme => {
 
     const imgPath = path.resolve(currentThemePath, img)
     const char = path.parse(img).name
-    const { width, height } = sizeOf(imgPath)
+    const { width, height } = imageSize(fs.readFileSync(imgPath))
 
     themeList[theme][char] = {
       width,
