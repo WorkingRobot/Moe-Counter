@@ -58,14 +58,17 @@ app.get(["/@:name", "/get/@:name"],
 
         // If the path is /get/ and the name does not exist, return 404
         if (req.path.startsWith("/get/@") && !await ifExistName(String(name))) {
-            res.status(404).send('Not Found');
-
-            logger.warn(
-                name,
-                'Not Found'
-            )
-
-            return;
+            res.status(404).send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Counter does not exist</pre>
+</body>
+</html>`);
+            return
         }
 
         res.set({
