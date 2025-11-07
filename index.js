@@ -133,7 +133,7 @@ app.get("/heart-beat", (req, res) => {
 });
 
 const listener = app.listen(process.env.APP_PORT || 3000, () => {
-    logger.info("Your app is listening on port " + listener.address().port);
+    logger.info(`Listening on port ${listener.address().port}`);
 });
 
 let __cache_counter = {};
