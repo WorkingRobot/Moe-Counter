@@ -3,7 +3,7 @@
 const path = require('path')
 const Database = require('better-sqlite3')
 
-const db = new Database(path.resolve(__dirname, '../count.db'))
+const db = new Database(path.resolve(path.dirname(__dirname), process.env.DB_URL || 'count.db'))
 
 db.exec(`CREATE TABLE IF NOT EXISTS tb_count (
     id    INTEGER      PRIMARY KEY AUTOINCREMENT
@@ -22,7 +22,7 @@ db.exec(`CREATE TABLE IF NOT EXISTS tb_count (
  */
 function getNum(name) {
   return new Promise((resolve, reject) => {
-    const stmt = db.prepare('SELECT `name`, `num` from tb_count WHERE `name` = ?')
+    const stmt = db.prepare(`SELECT name, num FROM tb_count WHERE name = ?`)
     const row = stmt.get(name)
     resolve(row || { name, num: 0 })
   })
@@ -30,7 +30,7 @@ function getNum(name) {
 
 function getAll() {
   return new Promise((resolve, reject) => {
-    const stmt = db.prepare('SELECT * from tb_count')
+    const stmt = db.prepare(`SELECT * from tb_count`)
     const rows = stmt.all()
     resolve(rows)
   })
@@ -38,10 +38,10 @@ function getAll() {
 
 function setNum(name, num) {
   return new Promise((resolve, reject) => {
-    db.exec(`INSERT INTO tb_count(\`name\`, \`num\`)
+    db.exec(`INSERT INTO tb_count("name", "num")
             VALUES($name, $num)
             ON CONFLICT(name) DO
-            UPDATE SET \`num\` = $num;`
+            UPDATE SET "num" = $num;`
       ,
       { $name: name, $num: num }
     )
@@ -52,10 +52,10 @@ function setNum(name, num) {
 
 function setNumMulti(counters) {
   return new Promise((resolve, reject) => {
-    const stmt = db.prepare(`INSERT INTO tb_count(\`name\`, \`num\`)
+    const stmt = db.prepare(`INSERT INTO tb_count("name", "num")
     VALUES($name, $num)
     ON CONFLICT(name) DO
-    UPDATE SET \`num\` = $num;`)
+    UPDATE SET "num" = $num;`)
 
     const setMany = db.transaction((counters) => {
       for (const counter of counters) stmt.run(counter)
