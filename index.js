@@ -18,10 +18,8 @@ app.set("view engine", "pug");
 
 app.get('/', (req, res) => {
     const site = process.env.APP_SITE || `${req.protocol}://${req.get('host')}`
-    const ga_id = process.env.GA_ID || null
     res.render('index', {
         site,
-        ga_id,
         themeList,
     })
 });
